@@ -1,0 +1,34 @@
+Transcricao com tempo - audio_narracao_03.mp3
+Idioma detectado: pt (conf: 1.000)
+Modelo: medium (faster-whisper)
+
+00:00.66 --> 00:03.66 | A evolução está no detalhe.
+00:03.66 --> 00:06.66 | Bem-vindas à Reserva 2.0.
+00:06.66 --> 00:08.66 | Diminuímos nossa assinatura.
+00:08.66 --> 00:11.66 | O novo pica-pau é minimalista,
+00:11.66 --> 00:15.66 | para que a sua personalidade apareça primeiro que a marca.
+00:15.66 --> 00:18.66 | Isso aqui é o New Line,
+00:18.66 --> 00:20.66 | a evolução do nosso line,
+00:20.66 --> 00:23.66 | visual nobre, com performance,
+00:23.66 --> 00:27.66 | não amassa, estica e volta para o lugar.
+00:27.66 --> 00:31.66 | E a nossa malha, mais amada, também evoluiu.
+00:31.66 --> 00:34.66 | Viemos com o Pima Tech,
+00:34.66 --> 00:37.66 | unindo o toque insuperável do Pima,
+00:37.66 --> 00:39.66 | mas com tecnologia que respira.
+00:39.66 --> 00:44.13 | Repensamos cada base,
+00:44.13 --> 00:46.13 | de camisetas às calças.
+00:46.13 --> 00:50.13 | As novas modelagens trazem um ajuste perfeito para cada corpo.
+00:50.13 --> 00:53.89 | chega de dúvidas.
+00:53.89 --> 00:56.89 | Nossa nova etiqueta fit sinaliza a modelagem
+00:56.89 --> 00:58.89 | de um jeito visual e direto,
+00:58.89 --> 01:02.46 | para você nunca mais errar.
+01:02.46 --> 01:04.46 | Inovação que se lê.
+01:04.46 --> 01:08.46 | Cada peça Tech agora tem seus pictogramas internos,
+01:08.46 --> 01:11.46 | explicando exatamente as propriedades e diferenciais
+01:11.46 --> 01:14.83 | daquele produto.
+01:14.83 --> 01:16.83 | E para entender tudo isso,
+01:16.83 --> 01:18.83 | criamos o tag explicativo.
+01:18.83 --> 01:24.72 | É o nosso manual da inovação na palma da sua mão.
+01:24.72 --> 01:26.72 | Versatilidade real.
+01:26.72 --> 01:28.72 | Tecware que saiu do trabalho
+01:28.72 --> 01:31.72 | para conquistar todas as ocasiões do seu dia.

@@ -1,0 +1,25 @@
+{
+  "name": "vmaker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Programmatic video editing with Remotion",
+  "scripts": {
+    "dev": "(sleep 2; open -a \"Google Chrome\" http://localhost:3000) & remotion studio src/index.ts",
+    "preview": "remotion preview src/index.ts",
+    "render": "remotion render src/index.ts IntroVideo output/intro.mp4 --concurrency=1",
+    "render:frames": "remotion render src/index.ts IntroVideo output/frames --sequence --concurrency=1",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/media": "^4.0.429",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}
