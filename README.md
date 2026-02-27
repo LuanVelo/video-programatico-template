@@ -38,6 +38,24 @@ Este projeto serve como base para:
 10. Criamos a composição `02SobreTecidos` para expansão do fluxo.
 11. Publicamos o projeto no GitHub em repositório novo.
 
+## Pipeline de geração (conteúdo e sincronização)
+
+- Vídeos de blocos gerados com prompts + imagens de e-commerce usando WAN 2 via ComfyUI.
+- Áudio transcrito com Whisper.
+- Áudio convertido para arquivo de texto com timestamps para sincronizar animações de texto.
+- Divisão do áudio em blocos para facilitar ajuste fino de tempo/edição.
+- Cada bloco com composição separada para edição em partes.
+
+## Atualizações recentes (motion titles e blocos)
+
+- Adição de composições por bloco para `motion titles` no `Root.tsx`.
+- Sincronização avançada de timeline por segmentos com offsets e remapeamento de tempo.
+- Suporte a cortes de áudio por bloco para ajuste fino de timing.
+- Inclusão de backgrounds específicos por trecho (ex.: bloco 03, Pima Tech e variações).
+- Entrada de múltiplos vídeos em layout de 3 colunas para cenas específicas.
+- Novos tipos em `motion-titles/types.ts` para controlar offsets, duração, cortes e fontes de mídia.
+- Inclusão de novos assets de bloco e chunks de narração para montagem segmentada.
+
 ## Estrutura de pastas
 
 ```txt

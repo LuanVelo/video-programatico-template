@@ -1,0 +1,245 @@
+{
+  "audioSource": "public/narracao/audio_narracao_03.mp3",
+  "chunks": [
+    {
+      "index": 1,
+      "startSec": 0.66,
+      "endSec": 3.66,
+      "durationSec": 3,
+      "text": "A evolução está no detalhe.",
+      "file": "public/narracao/chunks/01_a-evolucao-esta-no-detalhe.mp3"
+    },
+    {
+      "index": 2,
+      "startSec": 3.66,
+      "endSec": 6.66,
+      "durationSec": 3,
+      "text": "Bem-vindos à Reserva 2.0.",
+      "file": "public/narracao/chunks/02_bem-vindos-a-reserva-2-0.mp3"
+    },
+    {
+      "index": 3,
+      "startSec": 6.66,
+      "endSec": 8.66,
+      "durationSec": 2,
+      "text": "Diminuímos nossa assinatura.",
+      "file": "public/narracao/chunks/03_diminuimos-nossa-assinatura.mp3"
+    },
+    {
+      "index": 4,
+      "startSec": 8.66,
+      "endSec": 11.66,
+      "durationSec": 3,
+      "text": "O novo pica-pau é minimalista,",
+      "file": "public/narracao/chunks/04_o-novo-pica-pau-e-minimalista.mp3"
+    },
+    {
+      "index": 5,
+      "startSec": 11.66,
+      "endSec": 15.66,
+      "durationSec": 4,
+      "text": "para que a sua personalidade apareça primeiro que a marca.",
+      "file": "public/narracao/chunks/05_para-que-a-sua-personalidade-apareca-prime.mp3"
+    },
+    {
+      "index": 6,
+      "startSec": 15.66,
+      "endSec": 18.66,
+      "durationSec": 3,
+      "text": "Isso aqui é o New Line,",
+      "file": "public/narracao/chunks/06_isso-aqui-e-o-new-line.mp3"
+    },
+    {
+      "index": 7,
+      "startSec": 18.66,
+      "endSec": 20.66,
+      "durationSec": 2,
+      "text": "a evolução do nosso line,",
+      "file": "public/narracao/chunks/07_a-evolucao-do-nosso-line.mp3"
+    },
+    {
+      "index": 8,
+      "startSec": 20.66,
+      "endSec": 23.66,
+      "durationSec": 3,
+      "text": "visual nobre, com performance,",
+      "file": "public/narracao/chunks/08_visual-nobre-com-performance.mp3"
+    },
+    {
+      "index": 9,
+      "startSec": 23.66,
+      "endSec": 27.66,
+      "durationSec": 4,
+      "text": "não amassa, estica e volta para o lugar.",
+      "file": "public/narracao/chunks/09_nao-amassa-estica-e-volta-para-o-lugar.mp3"
+    },
+    {
+      "index": 10,
+      "startSec": 27.66,
+      "endSec": 31.66,
+      "durationSec": 4,
+      "text": "E a nossa malha, mais amada, também evoluiu.",
+      "file": "public/narracao/chunks/10_e-a-nossa-malha-mais-amada-tambem-evoluiu.mp3"
+    },
+    {
+      "index": 11,
+      "startSec": 31.66,
+      "endSec": 34.66,
+      "durationSec": 3,
+      "text": "Viemos com o Pima Tech,",
+      "file": "public/narracao/chunks/11_viemos-com-o-pima-tech.mp3"
+    },
+    {
+      "index": 12,
+      "startSec": 34.66,
+      "endSec": 37.66,
+      "durationSec": 3,
+      "text": "unindo o toque insuperável do Pima,",
+      "file": "public/narracao/chunks/12_unindo-o-toque-insuperavel-do-pima.mp3"
+    },
+    {
+      "index": 13,
+      "startSec": 37.66,
+      "endSec": 39.66,
+      "durationSec": 2,
+      "text": "mas com tecnologia que respira.",
+      "file": "public/narracao/chunks/13_mas-com-tecnologia-que-respira.mp3"
+    },
+    {
+      "index": 14,
+      "startSec": 39.66,
+      "endSec": 44.13,
+      "durationSec": 4.47,
+      "text": "Repensamos cada base,",
+      "file": "public/narracao/chunks/14_repensamos-cada-base.mp3"
+    },
+    {
+      "index": 15,
+      "startSec": 44.13,
+      "endSec": 46.13,
+      "durationSec": 2,
+      "text": "de camisetas às calças.",
+      "file": "public/narracao/chunks/15_de-camisetas-as-calcas.mp3"
+    },
+    {
+      "index": 16,
+      "startSec": 46.13,
+      "endSec": 50.13,
+      "durationSec": 4,
+      "text": "As novas modelagens trazem um ajuste perfeito para cada corpo.",
+      "file": "public/narracao/chunks/16_as-novas-modelagens-trazem-um-ajuste-perfe.mp3"
+    },
+    {
+      "index": 17,
+      "startSec": 50.13,
+      "endSec": 53.89,
+      "durationSec": 3.76,
+      "text": "chega de dúvidas.",
+      "file": "public/narracao/chunks/17_chega-de-duvidas.mp3"
+    },
+    {
+      "index": 18,
+      "startSec": 53.89,
+      "endSec": 56.89,
+      "durationSec": 3,
+      "text": "Nossa nova etiqueta fit sinaliza a modelagem",
+      "file": "public/narracao/chunks/18_nossa-nova-etiqueta-fit-sinaliza-a-modelag.mp3"
+    },
+    {
+      "index": 19,
+      "startSec": 56.89,
+      "endSec": 58.89,
+      "durationSec": 2,
+      "text": "de um jeito visual e direto,",
+      "file": "public/narracao/chunks/19_de-um-jeito-visual-e-direto.mp3"
+    },
+    {
+      "index": 20,
+      "startSec": 58.89,
+      "endSec": 62.46,
+      "durationSec": 3.57,
+      "text": "para você nunca mais errar.",
+      "file": "public/narracao/chunks/20_para-voce-nunca-mais-errar.mp3"
+    },
+    {
+      "index": 21,
+      "startSec": 62.46,
+      "endSec": 64.46,
+      "durationSec": 2,
+      "text": "Inovação que se lê.",
+      "file": "public/narracao/chunks/21_inovacao-que-se-le.mp3"
+    },
+    {
+      "index": 22,
+      "startSec": 64.46,
+      "endSec": 68.46,
+      "durationSec": 4,
+      "text": "Cada peça Tech agora tem seus pictogramas internos,",
+      "file": "public/narracao/chunks/22_cada-peca-tech-agora-tem-seus-pictogramas-.mp3"
+    },
+    {
+      "index": 23,
+      "startSec": 68.46,
+      "endSec": 71.46,
+      "durationSec": 3,
+      "text": "explicando exatamente as propriedades e diferenciais",
+      "file": "public/narracao/chunks/23_explicando-exatamente-as-propriedades-e-di.mp3"
+    },
+    {
+      "index": 24,
+      "startSec": 71.46,
+      "endSec": 74.83,
+      "durationSec": 3.37,
+      "text": "daquele produto.",
+      "file": "public/narracao/chunks/24_daquele-produto.mp3"
+    },
+    {
+      "index": 25,
+      "startSec": 74.83,
+      "endSec": 76.83,
+      "durationSec": 2,
+      "text": "E para entender tudo isso,",
+      "file": "public/narracao/chunks/25_e-para-entender-tudo-isso.mp3"
+    },
+    {
+      "index": 26,
+      "startSec": 76.83,
+      "endSec": 78.83,
+      "durationSec": 2,
+      "text": "criamos o tag explicativo.",
+      "file": "public/narracao/chunks/26_criamos-o-tag-explicativo.mp3"
+    },
+    {
+      "index": 27,
+      "startSec": 78.83,
+      "endSec": 84.72,
+      "durationSec": 5.89,
+      "text": "É o nosso manual da inovação na palma da sua mão.",
+      "file": "public/narracao/chunks/27_e-o-nosso-manual-da-inovacao-na-palma-da-s.mp3"
+    },
+    {
+      "index": 28,
+      "startSec": 84.72,
+      "endSec": 86.72,
+      "durationSec": 2,
+      "text": "Versatilidade real.",
+      "file": "public/narracao/chunks/28_versatilidade-real.mp3"
+    },
+    {
+      "index": 29,
+      "startSec": 86.72,
+      "endSec": 88.72,
+      "durationSec": 2,
+      "text": "Tecware que saiu do trabalho",
+      "file": "public/narracao/chunks/29_tecware-que-saiu-do-trabalho.mp3"
+    },
+    {
+      "index": 30,
+      "startSec": 88.72,
+      "endSec": 91.72,
+      "durationSec": 3,
+      "text": "para conquistar todas as ocasiões do seu dia.",
+      "file": "public/narracao/chunks/30_para-conquistar-todas-as-ocasioes-do-seu-d.mp3"
+    }
+  ]
+}

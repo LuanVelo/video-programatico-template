@@ -11,15 +11,42 @@ const videoSrc3 = staticFile('picapau_minimalista.mp4');
 const videoSrc4 = staticFile('lifestyle.mp4');
 const introFillingSrc = staticFile('filling.mp4');
 const introPersonalitySrc = staticFile('personalidade.mp4');
+const bloco3Coluna01Src = staticFile('bloco3/coluna01.mp4');
+const bloco3Coluna02Src = staticFile('bloco3/coluna02.mp4');
+const bloco3Coluna03Src = staticFile('bloco3/coluna03.mp4');
+const bloco3PimaTech01Src = staticFile('bloco3/pimatec-1.mp4');
+const bloco3PimaTech02Src = staticFile('bloco3/pimatec-2.mp4');
+const bloco3PimaTech03Src = staticFile('bloco3/pimatec-3.mp4');
+const bloco3PimaSiteFrameSrc = staticFile('bloco3/pima-site-frame.png');
 const audioSrc = staticFile('audio.wav');
 const audioNarracao03 = staticFile('narracao/audio_narracao_03.mp3');
 const logoSrc = staticFile('reserva-logo.png');
 const oldImageSrc = staticFile('antigo.jpeg');
 const newImageSrc = staticFile('novo.png');
+const cutStartSec = 0.2;
+const bloco03StartSec = 31.656666666666666;
+const pimaTechAnchorSec = 31.66;
+const pimaTechTargetInBlockSec = (1 * 30 + 13) / 30; // 00:01.13 at 30fps
+const pimaTechCurrentInBlockSec = pimaTechAnchorSec - bloco03StartSec;
+const pimaTechSyncOffsetSec = Math.max(0, pimaTechTargetInBlockSec - pimaTechCurrentInBlockSec);
+const pimaTechOriginalEndSec = 34.66;
+const pimaTechTargetEndInBlockSec = (3 * 30 + 10) / 30; // with 00:01.13 trim => ends at 00:01.27
+const pimaTechTargetEndSec = bloco03StartSec + pimaTechTargetEndInBlockSec;
+const pimaTechCurrentEndSec = pimaTechOriginalEndSec + pimaTechSyncOffsetSec;
+const pimaTechTailShiftSec = pimaTechTargetEndSec - pimaTechCurrentEndSec;
+const respiraOriginalStartSec = 37.66;
+const respiraTargetInBlockSec = (6 * 30 + 9) / 30; // shifted with start: 00:06.09
+const respiraTargetSec = bloco03StartSec + respiraTargetInBlockSec;
+const respiraCurrentStartSec = respiraOriginalStartSec + pimaTechSyncOffsetSec + pimaTechTailShiftSec;
+const respiraTailShiftSec = respiraTargetSec - respiraCurrentStartSec;
+const bloco03CutStartInBlockSec = (8 * 30 + 9) / 30; // shifted with start: 00:08.09
+const bloco03CutEndInBlockSec = (10 * 30 + 6) / 30; // shifted with start: 00:10.06
+const bloco03CutDurationSec = bloco03CutEndInBlockSec - bloco03CutStartInBlockSec;
+const bloco03CutStartAbsoluteSec = bloco03StartSec + bloco03CutStartInBlockSec;
+const bloco03CutEndAbsoluteSec = bloco03StartSec + bloco03CutEndInBlockSec;
+const bloco03TrimStartInBlockSec = pimaTechTargetInBlockSec; // remove everything before 00:01.13
 
-const motionTitlesDefaultProps: MotionTitlesTemplateProps = {
-  audioSrc: audioNarracao03,
-  segments: [
+const sourceSegments = [
     {startSec: 0.66, endSec: 3.66, text: 'A evolução está no detalhe.'},
     {startSec: 3.66, endSec: 6.66, text: 'Bem-vindos à Reserva 2.0.'},
     {startSec: 6.66, endSec: 8.66, text: 'Diminuímos nossa assinatura.'},
@@ -29,13 +56,13 @@ const motionTitlesDefaultProps: MotionTitlesTemplateProps = {
       endSec: 15.66,
       text: 'para que a sua personalidade apareça primeiro que a marca.',
     },
-    {startSec: 15.66, endSec: 18.66, text: 'Isso aqui é o New Line,'},
-    {startSec: 18.66, endSec: 20.66, text: 'a evolução do nosso line,'},
-    {startSec: 20.66, endSec: 23.66, text: 'visual nobre, com performance,'},
-    {startSec: 23.66, endSec: 27.66, text: 'não amassa, estica e volta para o lugar.'},
-    {startSec: 27.66, endSec: 31.66, text: 'E a nossa malha, mais amada, também evoluiu.'},
+    {startSec: 16.66, endSec: 18.74, text: 'isso aqui é o nosso Neo line'},
+    {startSec: 18.74, endSec: 20.71, text: 'a evolução do nosso line,'},
+    {startSec: 20.71, endSec: 23.7, text: 'visual nobre, com performance,'},
+    {startSec: 23.7, endSec: 27.8, text: 'Não amassa, estica e\nvolta para o lugar'},
+    {startSec: 27.8, endSec: 31.66, text: 'E a nossa malha, mais amada, também evoluiu.'},
     {startSec: 31.66, endSec: 34.66, text: 'Viemos com o Pima Tech,'},
-    {startSec: 34.66, endSec: 37.66, text: 'unindo o toque insuperável do Pima,'},
+    {startSec: 34.66, endSec: 37.66, text: 'unindo o toque\ninsuperável do pima,'},
     {startSec: 37.66, endSec: 39.66, text: 'mas com tecnologia que respira.'},
     {startSec: 39.66, endSec: 44.13, text: 'Repensamos cada base,'},
     {startSec: 44.13, endSec: 46.13, text: 'de camisetas às calças.'},
@@ -58,16 +85,87 @@ const motionTitlesDefaultProps: MotionTitlesTemplateProps = {
     {startSec: 84.72, endSec: 86.72, text: 'Versatilidade real.'},
     {startSec: 86.72, endSec: 88.72, text: 'Tecware que saiu do trabalho'},
     {startSec: 88.72, endSec: 91.72, text: 'para conquistar todas as ocasiões do seu dia.'},
-  ],
+  ];
+
+const mapTimelineTime = (timeSec: number) => {
+  const withAnchorSync = timeSec >= pimaTechAnchorSec ? timeSec + pimaTechSyncOffsetSec : timeSec;
+  const withPimaEndSync = withAnchorSync >= pimaTechCurrentEndSec ? withAnchorSync + pimaTechTailShiftSec : withAnchorSync;
+  const withRespiraSync = withPimaEndSync >= respiraCurrentStartSec ? withPimaEndSync + respiraTailShiftSec : withPimaEndSync;
+
+  if (withRespiraSync >= bloco03CutEndAbsoluteSec) {
+    return withRespiraSync - bloco03CutDurationSec;
+  }
+
+  if (withRespiraSync > bloco03CutStartAbsoluteSec) {
+    return bloco03CutStartAbsoluteSec;
+  }
+
+  return withRespiraSync;
 };
 
-const motionTitleBlocks: Array<{id: string; startSec: number; endSec: number}> = [
-  {id: 'intro-01', startSec: 0.0, endSec: 15.1},
-  {id: 'Bloco-02-sobre-os-tecidos', startSec: 15.11, endSec: 31.18},
-  {id: 'bloco-03-malha-mais-amada', startSec: 31.19, endSec: 50.0},
+const syncedSourceSegments = sourceSegments.map((segment) => ({
+  ...segment,
+  startSec: mapTimelineTime(segment.startSec),
+  endSec: mapTimelineTime(segment.endSec),
+}));
+
+const rebasedSegments = syncedSourceSegments
+  .map((segment) => ({
+    ...segment,
+    startSec: Math.max(0, segment.startSec - cutStartSec),
+    endSec: segment.endSec - cutStartSec,
+  }))
+  .filter((segment) => segment.endSec > 0);
+
+const motionTitlesDefaultProps: MotionTitlesTemplateProps = {
+  audioSrc: audioNarracao03,
+  audioOffsetSec: cutStartSec,
+  segments: rebasedSegments,
+};
+
+const bloco02TextStartSec =
+  syncedSourceSegments.find((segment) => segment.text.toLowerCase().startsWith('isso aqui é'))?.startSec ??
+  16.66;
+const bloco02StartSec = Math.max(0, bloco02TextStartSec - 1);
+const bloco02TrimSec = 1;
+
+const sourceMotionTitleBlocksBase: Array<{id: string; startSec: number; endSec: number}> = [
+  {id: 'intro-01', startSec: 0, endSec: 17.1},
+  {
+    id: 'Bloco-02-sobre-os-tecidos',
+    startSec: bloco02StartSec + bloco02TrimSec,
+    endSec: bloco02StartSec + 16.0,
+  },
+  {id: 'bloco-03-malha-mais-amada', startSec: bloco03StartSec, endSec: 50.0},
   {id: 'bloco-04-chega-de-duvidas', startSec: 50.01, endSec: 73.0},
   {id: 'bloco-05-entendendo', startSec: 75.0, endSec: 91.72},
 ];
+
+const sourceMotionTitleBlocks = sourceMotionTitleBlocksBase.map((block) => ({
+  ...block,
+  startSec: mapTimelineTime(block.startSec),
+  endSec: mapTimelineTime(block.endSec),
+}));
+
+const motionTitleBlocks = sourceMotionTitleBlocks
+  .map((block) => ({
+    ...block,
+    startSec: Math.max(0, block.startSec - cutStartSec),
+    endSec: block.endSec - cutStartSec,
+  }))
+  .filter((block) => block.endSec > 0);
+
+const introOnlySegments = rebasedSegments.filter((segment) => segment.startSec < bloco02StartSec - cutStartSec);
+const introExtendedSegments = introOnlySegments.map((segment, index) => {
+  const isLast = index === introOnlySegments.length - 1;
+  if (!isLast) {
+    return segment;
+  }
+  return {
+    ...segment,
+    endSec: segment.endSec + 2,
+  };
+});
 
 export const Root = () => {
   const calculateMetadata = async () => {
@@ -161,14 +259,30 @@ export const Root = () => {
       />
 
       {motionTitleBlocks.map((block) => (
+        (() => {
+          const isIntroBlock = block.id === 'intro-01';
+          const isBloco02 = block.id === 'Bloco-02-sobre-os-tecidos';
+          const isBloco03 = block.id === 'bloco-03-malha-mais-amada';
+          const blockSegments = isIntroBlock ? introExtendedSegments : motionTitlesDefaultProps.segments;
+          const effectiveBlockStartSec = isBloco03 ? block.startSec + bloco03TrimStartInBlockSec : block.startSec;
+          const effectiveAudioCutsSec = isBloco03
+            ? [
+                {
+                  startSec: Math.max(0, bloco03CutStartInBlockSec - bloco03TrimStartInBlockSec),
+                  endSec: Math.max(0, bloco03CutEndInBlockSec - bloco03TrimStartInBlockSec),
+                },
+              ].filter((cut) => cut.endSec > cut.startSec)
+            : undefined;
+
+          return (
         <Composition
           key={block.id}
           id={block.id}
           component={MotionTitlesTemplate}
           durationInFrames={getMotionTitleDuration(
-            motionTitlesDefaultProps.segments,
+            blockSegments,
             30,
-            block.startSec,
+            effectiveBlockStartSec,
             block.endSec,
           )}
           fps={30}
@@ -176,16 +290,28 @@ export const Root = () => {
           height={1080}
           defaultProps={{
             ...motionTitlesDefaultProps,
-            blockStartSec: block.startSec,
+            segments: blockSegments,
+            blockStartSec: effectiveBlockStartSec,
             blockEndSec: block.endSec,
-            variant: block.id === 'intro-01' ? 'apple' : 'default',
+            audioDurationSec: isIntroBlock ? 15 : undefined,
+            variant: isIntroBlock ? 'apple' : 'default',
+            threeColumnVideos: isBloco02
+              ? [bloco3Coluna01Src, bloco3Coluna02Src, bloco3Coluna03Src]
+              : undefined,
+            pimaTechBackgroundSrc: isBloco03 ? bloco3PimaTech01Src : undefined,
+            unindoBackgroundSrc: isBloco03 ? bloco3PimaTech02Src : undefined,
+            lastSequenceBackgroundSrc: isBloco03 ? bloco3PimaTech03Src : undefined,
+            repensamosBackgroundSrc: isBloco03 ? bloco3PimaSiteFrameSrc : undefined,
+            audioCutsSec: effectiveAudioCutsSec,
             backgroundVideos:
-              block.id === 'intro-01'
+              isIntroBlock
                 ? [videoSrc, introFillingSrc, videoSrc3, introPersonalitySrc]
                 : undefined,
-            logoSrc: block.id === 'intro-01' ? logoSrc : undefined,
+            logoSrc: isIntroBlock ? logoSrc : undefined,
           }}
         />
+          );
+        })()
       ))}
     </>
   );
