@@ -18,6 +18,7 @@ export type MotionTitlesTemplateProps = {
   unindoBackgroundSrc?: string;
   lastSequenceBackgroundSrc?: string;
   repensamosBackgroundSrc?: string;
+  etiquetaFitVideoSrc?: string;
   audioCutsSec?: Array<{startSec: number; endSec: number}>;
   logoSrc?: string;
 };

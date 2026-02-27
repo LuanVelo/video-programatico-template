@@ -18,6 +18,10 @@ const bloco3PimaTech01Src = staticFile('bloco3/pimatec-1.mp4');
 const bloco3PimaTech02Src = staticFile('bloco3/pimatec-2.mp4');
 const bloco3PimaTech03Src = staticFile('bloco3/pimatec-3.mp4');
 const bloco3PimaSiteFrameSrc = staticFile('bloco3/pima-site-frame.png');
+const bloco4VideoEtiquetaSrc = staticFile('bloco4/video-etiqueta.mp4');
+const bloco4Coluna01Src = staticFile('bloco4/colunas/01.mp4');
+const bloco4Coluna02Src = staticFile('bloco4/colunas/02.mp4');
+const bloco4Coluna03Src = staticFile('bloco4/colunas/03.mp4');
 const audioSrc = staticFile('audio.wav');
 const audioNarracao03 = staticFile('narracao/audio_narracao_03.mp3');
 const logoSrc = staticFile('reserva-logo.png');
@@ -128,6 +132,16 @@ const bloco02TextStartSec =
   16.66;
 const bloco02StartSec = Math.max(0, bloco02TextStartSec - 1);
 const bloco02TrimSec = 1;
+const bloco04TextStartSec =
+  sourceSegments.find((segment) => segment.text.toLowerCase().startsWith('chega de dúvidas'))?.startSec ?? 50.13;
+const bloco04DurationTargetSec = (20 * 30 + 17) / 30; // 00:20.17
+const bloco04EndSec = bloco04TextStartSec + bloco04DurationTargetSec;
+const bloco05TextStartSec =
+  sourceSegments.find((segment) => segment.text.toLowerCase().startsWith('e para entender tudo isso'))?.startSec ??
+  74.83;
+const bloco04AudioCurrentStartSec = 3 + 29 / 30; // 00:03.29
+const bloco04AudioTargetStartSec = 10 / 30; // 00:00.10
+const bloco04AudioTrimAdvanceSec = bloco04AudioCurrentStartSec - bloco04AudioTargetStartSec; // 00:03.19
 
 const sourceMotionTitleBlocksBase: Array<{id: string; startSec: number; endSec: number}> = [
   {id: 'intro-01', startSec: 0, endSec: 17.1},
@@ -137,8 +151,8 @@ const sourceMotionTitleBlocksBase: Array<{id: string; startSec: number; endSec: 
     endSec: bloco02StartSec + 16.0,
   },
   {id: 'bloco-03-malha-mais-amada', startSec: bloco03StartSec, endSec: 50.0},
-  {id: 'bloco-04-chega-de-duvidas', startSec: 50.01, endSec: 73.0},
-  {id: 'bloco-05-entendendo', startSec: 75.0, endSec: 91.72},
+  {id: 'bloco-04-chega-de-duvidas', startSec: bloco04TextStartSec, endSec: bloco04EndSec},
+  {id: 'bloco-05-entendendo', startSec: bloco05TextStartSec, endSec: 91.72},
 ];
 
 const sourceMotionTitleBlocks = sourceMotionTitleBlocksBase.map((block) => ({
@@ -263,6 +277,7 @@ export const Root = () => {
           const isIntroBlock = block.id === 'intro-01';
           const isBloco02 = block.id === 'Bloco-02-sobre-os-tecidos';
           const isBloco03 = block.id === 'bloco-03-malha-mais-amada';
+          const isBloco04 = block.id === 'bloco-04-chega-de-duvidas';
           const blockSegments = isIntroBlock ? introExtendedSegments : motionTitlesDefaultProps.segments;
           const effectiveBlockStartSec = isBloco03 ? block.startSec + bloco03TrimStartInBlockSec : block.startSec;
           const effectiveAudioCutsSec = isBloco03
@@ -291,17 +306,21 @@ export const Root = () => {
           defaultProps={{
             ...motionTitlesDefaultProps,
             segments: blockSegments,
+            audioOffsetSec: isBloco04 ? cutStartSec + bloco04AudioTrimAdvanceSec : cutStartSec,
             blockStartSec: effectiveBlockStartSec,
             blockEndSec: block.endSec,
             audioDurationSec: isIntroBlock ? 15 : undefined,
             variant: isIntroBlock ? 'apple' : 'default',
             threeColumnVideos: isBloco02
               ? [bloco3Coluna01Src, bloco3Coluna02Src, bloco3Coluna03Src]
-              : undefined,
+              : isBloco04
+                ? [bloco4Coluna01Src, bloco4Coluna02Src, bloco4Coluna03Src]
+                : undefined,
             pimaTechBackgroundSrc: isBloco03 ? bloco3PimaTech01Src : undefined,
             unindoBackgroundSrc: isBloco03 ? bloco3PimaTech02Src : undefined,
             lastSequenceBackgroundSrc: isBloco03 ? bloco3PimaTech03Src : undefined,
             repensamosBackgroundSrc: isBloco03 ? bloco3PimaSiteFrameSrc : undefined,
+            etiquetaFitVideoSrc: isBloco04 ? bloco4VideoEtiquetaSrc : undefined,
             audioCutsSec: effectiveAudioCutsSec,
             backgroundVideos:
               isIntroBlock

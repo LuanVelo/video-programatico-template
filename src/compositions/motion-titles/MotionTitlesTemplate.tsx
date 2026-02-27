@@ -71,12 +71,21 @@ const isMalhaEvoluiuLineText = (text: string) => /e a nossa malha,\s*mais amada,
 const isPimaTechLineText = (text: string) => /viemos com o pima tech/i.test(text);
 const isUnindoPimaLineText = (text: string) => /unindo o toque[\s\n]*insuper[aá]vel do pima/i.test(text);
 const isRespiraLineText = (text: string) => /mas com tecnologia que respira/i.test(text);
+const isChegaDeDuvidasLineText = (text: string) => /chega de d[úu]vidas/i.test(text);
+const isEtiquetaFitLineText = (text: string) => /nossa nova etiqueta fit sinaliza/i.test(text);
+const isVisualDiretoLineText = (text: string) => /de um jeito visual e direto/i.test(text);
+const isNuncaMaisErrarLineText = (text: string) => /para voc[eê] nunca mais errar/i.test(text);
+const isDaqueleProdutoLineText = (text: string) => /daquele produto/i.test(text);
 const isLastSequenceText = (text: string) => /as novas modelagens trazem um ajuste perfeito para cada corpo/i.test(text);
 const isCamisetasCalcasLineText = (text: string) => /de camisetas [àa]s cal[çc]as/i.test(text);
 const isRepensamosBackgroundText = (text: string) =>
   /repensamos cada base|de camisetas [àa]s cal[çc]as/i.test(text);
+const isPictogramasLineText = (text: string) =>
+  /cada peça tech agora tem seus pictogramas internos|explicando exatamente as propriedades e diferenciais|daquele produto/i.test(
+    text,
+  );
 const isThreeColumnBackgroundText = (text: string) =>
-  isPerformanceLineText(text) || isNoAmassaLineText(text);
+  isPerformanceLineText(text) || isNoAmassaLineText(text) || isPictogramasLineText(text);
 const removeTrailingPeriod = (text: string) => text.replace(/\.\s*$/u, '').trimEnd();
 const normalizeWordToken = (token: string) =>
   token
@@ -84,6 +93,28 @@ const normalizeWordToken = (token: string) =>
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^\p{L}\p{N}]/gu, '')
     .toLowerCase();
+const wrapTextByApproxChars = (text: string, maxCharsPerLine: number) => {
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let currentLine = '';
+
+  for (const word of words) {
+    const candidate = currentLine ? `${currentLine} ${word}` : word;
+    if (!currentLine || candidate.length <= maxCharsPerLine) {
+      currentLine = candidate;
+      continue;
+    }
+
+    lines.push(currentLine);
+    currentLine = word;
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines;
+};
 
 const Caption: React.FC<{
   segment: TranscriptSegment;
@@ -110,6 +141,10 @@ const Caption: React.FC<{
   const isFinalPersonalityLine = isFinalPersonalityLineText(segment.text);
   const isMalhaEvoluiuLine = isMalhaEvoluiuLineText(segment.text);
   const isPimaTechLine = isPimaTechLineText(segment.text);
+  const isChegaDeDuvidasLine = isChegaDeDuvidasLineText(segment.text);
+  const isEtiquetaFitLine = isEtiquetaFitLineText(segment.text);
+  const isNuncaMaisErrarLine = isNuncaMaisErrarLineText(segment.text);
+  const isDaqueleProdutoLine = isDaqueleProdutoLineText(segment.text);
   const welcomeParts = isWelcomeSegment ? getWelcomeParts(displayText) : null;
 
   const enterEnd = Math.min(durationInFrames - 1, 12);
@@ -152,6 +187,76 @@ const Caption: React.FC<{
         });
 
   const motionPreset = segmentIndex % 4;
+
+  if (isEtiquetaFitLine) {
+    const availableTextWidth = width * 0.5 - (width * 0.06 + width * 0.04);
+    const avgCharWidth = Math.max(10, Math.round(fontSize * 0.77 * 0.52));
+    const maxCharsPerLine = Math.max(12, Math.min(28, Math.floor(availableTextWidth / avgCharWidth)));
+    const lines = wrapTextByApproxChars(displayText, maxCharsPerLine);
+
+    return (
+      <AbsoluteFill style={{pointerEvents: 'none', opacity}}>
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '50%',
+            height: '100%',
+            overflow: 'hidden',
+            paddingLeft: Math.round(width * 0.06),
+            paddingRight: Math.round(width * 0.04),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              color: '#111111',
+              textTransform: 'uppercase',
+              fontFamily: 'DM Sans, system-ui, sans-serif',
+              fontWeight: 800,
+              fontSize: Math.round(fontSize * 0.77),
+              letterSpacing: -0.8,
+              lineHeight: 1.08,
+              textAlign: 'center',
+            }}
+          >
+            {lines.map((line, lineIndex) => {
+              const lineStart = lineIndex * 6;
+              const lineEnd = lineStart + 10;
+              const lineOpacity = interpolate(localFrame, [lineStart, lineEnd], [0, 1], {
+                extrapolateLeft: 'clamp',
+                extrapolateRight: 'clamp',
+                easing: Easing.out(Easing.cubic),
+              });
+              const lineY = interpolate(localFrame, [lineStart, lineEnd], [18, 0], {
+                extrapolateLeft: 'clamp',
+                extrapolateRight: 'clamp',
+                easing: Easing.out(Easing.cubic),
+              });
+
+              return (
+                <div
+                  key={`${line}-${lineIndex}`}
+                  style={{
+                    opacity: lineOpacity,
+                    transform: `translateY(${lineY}px)`,
+                    marginBottom: lineIndex === lines.length - 1 ? 0 : 6,
+                  }}
+                >
+                  {line}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div style={{position: 'absolute', left: '50%', top: 0, width: '50%', height: '100%'}} />
+      </AbsoluteFill>
+    );
+  }
 
   return (
     <AbsoluteFill
@@ -555,6 +660,79 @@ const Caption: React.FC<{
             );
           })()
         ) : (
+          isEtiquetaFitLine ? (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  width: '50%',
+                  height: '100%',
+                  paddingLeft: Math.round(width * 0.06),
+                  paddingRight: Math.round(width * 0.04),
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    color: '#111111',
+                    textTransform: 'uppercase',
+                    fontFamily: 'DM Sans, system-ui, sans-serif',
+                    fontWeight: 800,
+                    fontSize: Math.round(fontSize * 0.77),
+                    letterSpacing: -0.8,
+                    lineHeight: 1.08,
+                    textAlign: 'center',
+                    maxWidth: '100%',
+                  }}
+                >
+                  {(() => {
+                    const availableTextWidth = width * 0.5 - (width * 0.06 + width * 0.04);
+                    const avgCharWidth = Math.max(10, Math.round(fontSize * 0.77 * 0.52));
+                    const maxCharsPerLine = Math.max(12, Math.min(28, Math.floor(availableTextWidth / avgCharWidth)));
+                    const lines = wrapTextByApproxChars(displayText, maxCharsPerLine);
+                    return lines.map((line, lineIndex) => {
+                      const lineStart = lineIndex * 6;
+                      const lineEnd = lineStart + 10;
+                      const lineOpacity = interpolate(localFrame, [lineStart, lineEnd], [0, 1], {
+                        extrapolateLeft: 'clamp',
+                        extrapolateRight: 'clamp',
+                        easing: Easing.out(Easing.cubic),
+                      });
+                      const lineY = interpolate(localFrame, [lineStart, lineEnd], [18, 0], {
+                        extrapolateLeft: 'clamp',
+                        extrapolateRight: 'clamp',
+                        easing: Easing.out(Easing.cubic),
+                      });
+
+                      return (
+                        <div
+                          key={`${line}-${lineIndex}`}
+                          style={{
+                            opacity: lineOpacity,
+                            transform: `translateY(${lineY}px)`,
+                            marginBottom: lineIndex === lines.length - 1 ? 0 : 6,
+                          }}
+                        >
+                          {line}
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              </div>
+            </div>
+          ) : (
           (() => {
             let wordIndex = -1;
 
@@ -568,8 +746,54 @@ const Caption: React.FC<{
               let wordStart = isSpace ? 0 : wordIndex * staggerFrames;
 
               const wordAnimDuration = isPimaTechLine ? 8 : Math.max(6, Math.floor(staggerFrames * 1.8));
+              const sequence1AnimEndFrame = Math.min(durationInFrames - 1, 1 * fps + 3); // 00:01.03
+              const sequence1HoldEndFrame = Math.min(durationInFrames - 1, 2 * fps); // 00:02.00
+              const sequence1WordAnimDuration = Math.max(8, Math.round(fps * 0.43));
+              const nuncaMaisErrarAnimEndLocalFrame = Math.min(durationInFrames - 1, 39); // 00:08.04 - 00:06.25
+              const nuncaMaisErrarWordAnimDuration = Math.max(8, Math.round(fps * 0.36));
+              const daqueleProdutoAnimEndLocalFrame = Math.min(durationInFrames - 1, 13); // 00:19.18 - 00:19.05
+              const daqueleProdutoWordAnimDuration = Math.max(6, Math.round(fps * 0.28));
               if (isPimaTechLine && !isSpace) {
                 wordStart = wordIndex * 2;
+              }
+              if (isChegaDeDuvidasLine && !isSpace) {
+                const nonSpaceIndex = Math.max(0, wordIndex);
+                const normalizedProgress =
+                  nonSpaceTokens <= 1 ? 1 : Math.min(1, nonSpaceIndex / Math.max(1, nonSpaceTokens - 1));
+                const targetWordEnd =
+                  nonSpaceTokens <= 1
+                    ? sequence1AnimEndFrame
+                    : Math.round(
+                        sequence1WordAnimDuration +
+                          normalizedProgress * (sequence1AnimEndFrame - sequence1WordAnimDuration),
+                      );
+                wordStart = Math.max(0, targetWordEnd - sequence1WordAnimDuration);
+              }
+              if (isNuncaMaisErrarLine && !isSpace) {
+                const nonSpaceIndex = Math.max(0, wordIndex);
+                const normalizedProgress =
+                  nonSpaceTokens <= 1 ? 1 : Math.min(1, nonSpaceIndex / Math.max(1, nonSpaceTokens - 1));
+                const targetWordEnd =
+                  nonSpaceTokens <= 1
+                    ? nuncaMaisErrarAnimEndLocalFrame
+                    : Math.round(
+                        nuncaMaisErrarWordAnimDuration +
+                          normalizedProgress * (nuncaMaisErrarAnimEndLocalFrame - nuncaMaisErrarWordAnimDuration),
+                      );
+                wordStart = Math.max(0, targetWordEnd - nuncaMaisErrarWordAnimDuration);
+              }
+              if (isDaqueleProdutoLine && !isSpace) {
+                const nonSpaceIndex = Math.max(0, wordIndex);
+                const normalizedProgress =
+                  nonSpaceTokens <= 1 ? 1 : Math.min(1, nonSpaceIndex / Math.max(1, nonSpaceTokens - 1));
+                const targetWordEnd =
+                  nonSpaceTokens <= 1
+                    ? daqueleProdutoAnimEndLocalFrame
+                    : Math.round(
+                        daqueleProdutoWordAnimDuration +
+                          normalizedProgress * (daqueleProdutoAnimEndLocalFrame - daqueleProdutoWordAnimDuration),
+                      );
+                wordStart = Math.max(0, targetWordEnd - daqueleProdutoWordAnimDuration);
               }
               if (isMalhaEvoluiuLine && !isSpace) {
                 // Segment starts at 00:12:14.
@@ -588,7 +812,14 @@ const Caption: React.FC<{
                   wordStart = Math.max(0, targetEnd - wordAnimDuration);
                 }
               }
-              const wordEnd = wordStart + wordAnimDuration;
+              const resolvedWordAnimDuration = isChegaDeDuvidasLine
+                ? sequence1WordAnimDuration
+                : isNuncaMaisErrarLine
+                  ? nuncaMaisErrarWordAnimDuration
+                  : isDaqueleProdutoLine
+                    ? daqueleProdutoWordAnimDuration
+                  : wordAnimDuration;
+              const wordEnd = wordStart + resolvedWordAnimDuration;
 
               const fromY = isSignatureArea
                 ? 36
@@ -660,6 +891,13 @@ const Caption: React.FC<{
                 isSignatureArea
                   ? 1 +
                     Math.sin(((localFrame - wordStart) / Math.max(1, durationInFrames)) * Math.PI) * 0.018
+                  : 1;
+              const holdOpacity =
+                isChegaDeDuvidasLine && !isSpace
+                  ? interpolate(localFrame, [sequence1AnimEndFrame, sequence1HoldEndFrame, sequence1HoldEndFrame + 1], [1, 1, 0], {
+                      extrapolateLeft: 'clamp',
+                      extrapolateRight: 'clamp',
+                    })
                   : 1;
 
               if (isLineBreak) {
@@ -739,7 +977,7 @@ const Caption: React.FC<{
                     display: 'inline-flex',
                     alignItems: 'center',
                     position: 'relative',
-                    opacity: wordOpacity,
+                    opacity: wordOpacity * holdOpacity,
                     transform: `translate3d(${wordX}px, ${wordY}px, 0) rotate(${wordRotate}deg) scale(${
                       wordScale * signaturePulse
                     })`,
@@ -840,6 +1078,7 @@ const Caption: React.FC<{
               );
             });
           })()
+          )
         )}
       </div>
     </AbsoluteFill>
@@ -860,6 +1099,7 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
   unindoBackgroundSrc,
   lastSequenceBackgroundSrc,
   repensamosBackgroundSrc,
+  etiquetaFitVideoSrc,
   audioCutsSec = [],
   logoSrc,
 }) => {
@@ -885,16 +1125,13 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
     .filter((cut) => cut.end > cut.start)
     .sort((a, b) => a.start - b.start);
 
-  const clippedSegments = segments
+  const clippedSegmentsBase = segments
     .map((segment, index) => {
       const originalFrom = Math.max(0, Math.round(segment.startSec * fps));
       const originalTo = Math.max(originalFrom + 1, Math.round(segment.endSec * fps));
       const originalDuration = originalTo - originalFrom;
-      const clippedFrom = Math.max(originalFrom, blockStartFrame);
-      const clippedTo = Math.min(originalTo, blockEndFrame);
-      const durationInFrames = clippedTo - clippedFrom;
-
-      if (durationInFrames <= 0) {
+      // Keep future segments so timeline remapping can pull them earlier into this block.
+      if (originalTo <= blockStartFrame) {
         return null;
       }
 
@@ -903,14 +1140,74 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
         segment,
         originalFrom,
         originalDuration,
-        from: clippedFrom - blockStartFrame,
+        from: isEtiquetaFitLineText(segment.text) ? 2 * fps + 1 : originalFrom - blockStartFrame,
+        durationInFrames: originalDuration,
+        useSequenceFrameForCaption: isEtiquetaFitLineText(segment.text),
+      };
+    })
+    .filter((segment): segment is NonNullable<typeof segment> => segment !== null);
+  const visualDiretoTargetFrom = 4 * fps + 21; // 00:04.21
+  const nuncaMaisErrarTargetFrom = 6 * fps + 25; // 00:06.25
+  const daqueleProdutoTargetFrom = 19 * fps + 5; // 00:19.05
+  const daqueleProdutoMinDurationFrames = fps + 13; // ends at 00:19.18 and holds 1s
+  const applyAnchor = (
+    segmentList: typeof clippedSegmentsBase,
+    matcher: (text: string) => boolean,
+    targetFrom: number,
+  ) => {
+    const anchorIndex = segmentList.findIndex((segmentData) => matcher(segmentData.segment.text));
+    if (anchorIndex === -1) {
+      return segmentList;
+    }
+
+    const delta = targetFrom - segmentList[anchorIndex].from;
+    if (delta === 0) {
+      return segmentList;
+    }
+
+    return segmentList.map((segmentData, index) => ({
+      ...segmentData,
+      from: index < anchorIndex ? segmentData.from : Math.max(0, segmentData.from + delta),
+      useSequenceFrameForCaption: index < anchorIndex ? segmentData.useSequenceFrameForCaption : true,
+    }));
+  };
+
+  const remappedSegmentsRaw = applyAnchor(
+    applyAnchor(clippedSegmentsBase, isVisualDiretoLineText, visualDiretoTargetFrom),
+    isNuncaMaisErrarLineText,
+    nuncaMaisErrarTargetFrom,
+  ).map((segmentData) => {
+    if (!isDaqueleProdutoLineText(segmentData.segment.text)) {
+      return segmentData;
+    }
+
+    return {
+      ...segmentData,
+      from: daqueleProdutoTargetFrom,
+      durationInFrames: Math.max(segmentData.durationInFrames, daqueleProdutoMinDurationFrames),
+      useSequenceFrameForCaption: true,
+    };
+  });
+  const remappedSegments = remappedSegmentsRaw
+    .map((segmentData) => {
+      const clippedFrom = Math.max(0, segmentData.from);
+      const clippedTo = Math.min(blockDurationFrames, segmentData.from + segmentData.durationInFrames);
+      const durationInFrames = clippedTo - clippedFrom;
+
+      if (durationInFrames <= 0) {
+        return null;
+      }
+
+      return {
+        ...segmentData,
+        from: clippedFrom,
         durationInFrames,
       };
     })
     .filter((segment): segment is NonNullable<typeof segment> => segment !== null);
 
   let videoCursor = 0;
-  const segmentVideoSources = clippedSegments.map((_segment, visibleIndex) => {
+  const segmentVideoSources = remappedSegments.map((_segment, visibleIndex) => {
     const text = _segment.segment.text;
     const picapauSrc = backgroundVideos.find((src) => src.includes('picapau_minimalista'));
     if (variant === 'apple' && isDiminuimosLineText(text) && picapauSrc) {
@@ -931,7 +1228,7 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
     return src;
   });
 
-  const threeColumnSegments = clippedSegments.filter(
+  const threeColumnSegments = remappedSegments.filter(
     (segmentData) => isThreeColumnBackgroundText(segmentData.segment.text) && threeColumnVideos.length >= 3,
   );
   const threeColumnBackgroundRange =
@@ -944,9 +1241,27 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
             threeColumnSegments[0].from,
         }
       : null;
+  const visualDiretoSegmentIndex = remappedSegments.findIndex((segmentData) =>
+    isVisualDiretoLineText(segmentData.segment.text),
+  );
+  const visualDiretoWhiteHold =
+    visualDiretoSegmentIndex === -1 || visualDiretoSegmentIndex >= remappedSegments.length - 1
+      ? null
+      : (() => {
+          const current = remappedSegments[visualDiretoSegmentIndex];
+          const next = remappedSegments[visualDiretoSegmentIndex + 1];
+          const holdFrom = current.from + current.durationInFrames;
+          const holdDuration = next.from - holdFrom;
+          return holdDuration > 0 ? {from: holdFrom, durationInFrames: holdDuration} : null;
+        })();
 
   return (
     <AbsoluteFill style={{backgroundColor: variant === 'apple' ? '#f5f5f7' : '#000000'}}>
+      {visualDiretoWhiteHold ? (
+        <Sequence from={visualDiretoWhiteHold.from} durationInFrames={visualDiretoWhiteHold.durationInFrames}>
+          <AbsoluteFill style={{backgroundColor: '#ffffff'}} />
+        </Sequence>
+      ) : null}
       {threeColumnBackgroundRange ? (
         <Sequence
           key="bg-three-columns-continuous"
@@ -970,17 +1285,22 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
                 </div>
               ))}
             </div>
+            <AbsoluteFill style={{backgroundColor: '#000000', opacity: 0.3}} />
           </AbsoluteFill>
         </Sequence>
       ) : null}
 
-      {clippedSegments.map((segmentData, visibleIndex) => {
+      {remappedSegments.map((segmentData, visibleIndex) => {
         const {from, durationInFrames, segment} = segmentData;
         const isPimaTechLine = isPimaTechLineText(segment.text);
         const isUnindoPimaLine = isUnindoPimaLineText(segment.text);
         const isLastSequence = isLastSequenceText(segment.text);
         const isCamisetasCalcasLine = isCamisetasCalcasLineText(segment.text);
         const isRepensamosBackgroundLine = isRepensamosBackgroundText(segment.text);
+        const isEtiquetaFitLine = isEtiquetaFitLineText(segment.text);
+        const isVisualDiretoLine = isVisualDiretoLineText(segment.text);
+        const isNuncaMaisErrarLine = isNuncaMaisErrarLineText(segment.text);
+        const isWhiteOnlyTransitionLine = isVisualDiretoLine || isNuncaMaisErrarLine;
         const videoSrc =
           (isPimaTechLine && pimaTechBackgroundSrc) ||
           (isUnindoPimaLine && unindoBackgroundSrc) ||
@@ -1003,7 +1323,9 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
         const fadeInFrames = isUnindoPimaLine ? 0 : isMinimalistLine ? 16 : 8;
         const fadeOutFrames = isDiminuimosLine ? 20 : 8;
         const bgOpacity =
-          durationInFrames <= 1
+          isWhiteOnlyTransitionLine
+            ? 1
+            : durationInFrames <= 1
             ? 1
             : fadeInFrames === 0
               ? interpolate(
@@ -1042,11 +1364,81 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
             durationInFrames,
           }) *
             0.015;
+        const etiquetaVideoRevealFrames = Math.max(8, Math.round(fps * 0.4));
+        const etiquetaVideoOpacity = isEtiquetaFitLine
+          ? interpolate(segmentLocalFrame, [0, etiquetaVideoRevealFrames], [0, 1], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+              easing: Easing.out(Easing.cubic),
+            })
+          : 1;
+        const etiquetaVideoTranslateX = isEtiquetaFitLine
+          ? interpolate(segmentLocalFrame, [0, etiquetaVideoRevealFrames], [42, 0], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+              easing: Easing.out(Easing.cubic),
+            })
+          : 0;
+        const etiquetaVideoScale = isEtiquetaFitLine
+          ? interpolate(segmentLocalFrame, [0, etiquetaVideoRevealFrames], [1.035, 1], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+              easing: Easing.out(Easing.cubic),
+            })
+          : 1;
 
         return (
           <Sequence key={`bg-${visibleIndex}-${from}`} from={from} durationInFrames={durationInFrames}>
             {isCamisetasCalcasLine ? (
               <AbsoluteFill style={{backgroundColor: '#ffffff', opacity: bgOpacity}} />
+            ) : isWhiteOnlyTransitionLine ? (
+              <AbsoluteFill style={{backgroundColor: '#ffffff', opacity: 1}} />
+            ) : isEtiquetaFitLine ? (
+              <AbsoluteFill style={{backgroundColor: '#ffffff', opacity: bgOpacity}}>
+                <div style={{display: 'flex', width: '100%', height: '100%'}}>
+                  <div style={{width: '50%', height: '100%', backgroundColor: '#ffffff'}} />
+                  <div
+                    style={{
+                      width: '50%',
+                      height: '100%',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      opacity: etiquetaVideoOpacity,
+                      transform: `translateX(${etiquetaVideoTranslateX}px) scale(${etiquetaVideoScale})`,
+                      transformOrigin: 'right center',
+                    }}
+                  >
+                    {etiquetaFitVideoSrc ? (
+                      <Video
+                        src={etiquetaFitVideoSrc}
+                        muted
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    ) : (
+                      <AbsoluteFill
+                        style={{
+                          background:
+                            'linear-gradient(135deg, rgba(228,228,228,1) 0%, rgba(203,203,203,1) 100%)',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          color: '#555',
+                          fontFamily: 'DM Sans, system-ui, sans-serif',
+                          fontWeight: 700,
+                          fontSize: 36,
+                          letterSpacing: -0.8,
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Video a definir
+                      </AbsoluteFill>
+                    )}
+                  </div>
+                </div>
+              </AbsoluteFill>
             ) : isMinimalistLine ? (
               <AbsoluteFill style={{backgroundColor: '#000000', opacity: bgOpacity}} />
             ) : isThreeColumnSegment ? (
@@ -1123,7 +1515,7 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
           </Sequence>
         );
       })}
-      {clippedSegments.map(({index, segment, from, originalFrom, originalDuration, durationInFrames}, visibleIndex) => {
+      {remappedSegments.map(({index, segment, from, originalFrom, originalDuration, durationInFrames, useSequenceFrameForCaption}, visibleIndex) => {
         const sourceFrame = frame + blockStartFrame;
         const isThreeColumnSegment = isThreeColumnBackgroundText(segment.text) && threeColumnVideos.length >= 3;
         const hasPimaTechBg = isPimaTechLineText(segment.text) && Boolean(pimaTechBackgroundSrc);
@@ -1146,7 +1538,7 @@ export const MotionTitlesTemplate: React.FC<MotionTitlesTemplateProps> = ({
             <Caption
               segment={segment}
               segmentIndex={visibleIndex}
-              localFrame={sourceFrame - originalFrom}
+              localFrame={useSequenceFrameForCaption ? frame - from : sourceFrame - originalFrom}
               durationInFrames={originalDuration}
               variant={variant}
               textColor={hasDarkBackground ? '#ffffff' : '#000000'}
